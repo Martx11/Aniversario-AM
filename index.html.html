@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💜 2🎉 Años Abejita 🎉💜</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+height:100vh;
+overflow:hidden;
+background:linear-gradient(135deg,#ffd6f6,#e0bbff,#cdb4db);
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+}
+
+/* PANTALLAS */
+.screen{
+position:absolute;
+width:100%;
+height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+transition:0.7s;
+}
+
+.hidden{
+opacity:0;
+pointer-events:none;
+}
+
+/* TARJETA */
+.card{
+background:rgba(255,255,255,0.25);
+backdrop-filter:blur(18px);
+padding:30px;
+border-radius:25px;
+width:92%;
+max-width:400px;
+box-shadow:0 8px 30px rgba(0,0,0,0.2);
+color:#4a148c;
+animation:fadeIn 1s ease;
+}
+
+/* INPUT */
+input{
+padding:10px;
+border:none;
+border-radius:15px;
+margin-top:15px;
+text-align:center;
+width:70%;
+}
+
+/* BOTÓN */
+button{
+margin-top:15px;
+background:#ff8fab;
+border:none;
+padding:10px 20px;
+border-radius:20px;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+/* COUNTDOWN */
+.countdown{
+display:flex;
+justify-content:space-between;
+margin:20px 0;
+}
+
+.time-box{
+background:white;
+padding:10px;
+border-radius:15px;
+width:23%;
+font-size:13px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+.time-box span{
+display:block;
+font-weight:bold;
+font-size:18px;
+}
+
+/* GALERÍA */
+.gallery{
+display:flex;
+overflow-x:auto;
+scroll-snap-type:x mandatory;
+gap:10px;
+margin-top:15px;
+}
+
+.gallery img{
+width:100%;
+max-width:250px;
+border-radius:20px;
+scroll-snap-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* CORAZONES */
+.heart{
+position:absolute;
+font-size:20px;
+animation:float 6s linear infinite;
+opacity:0.7;
+}
+
+@keyframes float{
+from{transform:translateY(100vh);}
+to{transform:translateY(-10vh);}
+}
+
+/* CONFETTI */
+.confetti{
+position:absolute;
+width:8px;
+height:8px;
+animation:fall 3s linear infinite;
+}
+
+@keyframes fall{
+from{transform:translateY(-10vh) rotate(0);}
+to{transform:translateY(110vh) rotate(360deg);}
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+</style>
+</head>
+<body>
+
+<!-- 🔐 LOCK SCREEN -->
+<div class="screen" id="lockScreen">
+<div class="card">
+<h2>💜 Solo para Abi 💜</h2>
+<p>Ingresa La Contraseña mamore</p>
+<input type="password" id="password" placeholder="DDMM">
+<br>
+<button onclick="verificar()">Entrar</button>
+<p id="error" style="color:red;margin-top:10px;"></p>
+</div>
+</div>
+
+<!-- 💜 MAIN -->
+<div class="screen hidden" id="mainScreen">
+<div class="card">
+<h2>💜 Feliz 2 Años Abi 💜</h2>
+<p>Cuenta Regresiva Para El 10</p>
+
+<div class="countdown">
+<div class="time-box"><span id="dias">0</span>Días</div>
+<div class="time-box"><span id="horas">0</span>Horas</div>
+<div class="time-box"><span id="minutos">0</span>Min</div>
+<div class="time-box"><span id="segundos">0</span>Seg</div>
+</div>
+
+<button id="btnCarta" disabled>🔒 Carta bloqueada</button>
+
+<div id="envolturaCarta" style="display:none; margin-top:15px;">
+    <div id="sobre" style="
+        width:100%;
+        height:120px;
+        background:#ff8fab;
+        border-radius:15px;
+        position:relative;
+        cursor:pointer;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        color:white;
+        font-weight:bold;
+        transition:0.5s;
+    ">
+        Toca para abrir 💌
+    </div>
+
+    <div id="carta" style="
+        margin-top:10px;
+        max-height:0;
+        overflow:hidden;
+        transition:max-height 1s ease;
+    "></div>
+</div> 
+
+<button onclick="mostrarGaleria()">Ver Recuerdos 📸</button>
+
+<div id="galeriaContainer" style="display:none;">
+<div class="gallery">
+<img src="https://picsum.photos/300/400?1">
+<img src="https://picsum.photos/300/400?2">
+<img src="https://picsum.photos/300/400?3">
+</div>
+</div>
+
+</div>
+</div>
+
+<script>
+
+// 🔐 PASSWORD
+function verificar(){
+const pass=document.getElementById("password").value;
+if(pass==="AM1003"){
+document.getElementById("lockScreen").classList.add("hidden");
+document.getElementById("mainScreen").classList.remove("hidden");
+}else{
+document.getElementById("error").innerText="No Hay Pistas nena";
+}
+}
+
+// ⏳ COUNTDOWN
+const fechaObjetivo=new Date("March 10, 2026 00:00:00").getTime();
+
+const intervalo=setInterval(function(){
+const ahora=new Date().getTime();
+const diferencia=fechaObjetivo-ahora;
+
+const dias=Math.floor(diferencia/(1000*60*60*24));
+const horas=Math.floor((diferencia%(1000*60*60*24))/(1000*60*60));
+const minutos=Math.floor((diferencia%(1000*60*60))/(1000*60));
+const segundos=Math.floor((diferencia%(1000*60))/1000);
+
+document.getElementById("dias").innerText=dias;
+document.getElementById("horas").innerText=horas;
+document.getElementById("minutos").innerText=minutos;
+document.getElementById("segundos").innerText=segundos;
+
+if(diferencia<0){
+clearInterval(intervalo);
+document.querySelector(".countdown").innerHTML="🎉🎉 ¡Feliz Aniversario Abejitaaaaaa! 🎉🎉";
+lanzarConfetti();
+desbloquearCarta();
+}
+
+},1000);
+
+//  CONFETTI
+function desbloquearCarta(){
+    const btn = document.getElementById("btnCarta");
+    btn.disabled = false;
+    btn.innerText = "Abrir Carta 💌";
+    btn.onclick = function(){
+        document.getElementById("envolturaCarta").style.display="block";
+    };
+}
+function lanzarConfetti(){
+for(let i=0;i<100;i++){
+const conf=document.createElement("div");
+conf.classList.add("confetti");
+conf.style.left=Math.random()*100+"vw";
+conf.style.background=`hsl(${Math.random()*360},70%,60%)`;
+conf.style.animationDuration=(Math.random()*3+2)+"s";
+document.body.appendChild(conf);
+setTimeout(()=>{conf.remove()},5000);
+}
+}
+
+// 💌 CARTA
+const texto="En este tiempo en el que me has aguantado que ni si quiera tengo idea de como, e pasado lo mejor, e aprendido y e vivido de todo a tu lado, agradezco que pasemos tiempo juntitos mi amor, ¿vamos por otro año mas?";
+
+document.getElementById("sobre").onclick = function(){
+    const carta = document.getElementById("carta");
+    carta.style.maxHeight="300px";
+    escribirCarta();
+};
+
+function escribirCarta(){
+    let i=0;
+    const contenedor=document.getElementById("carta");
+    contenedor.innerHTML="";
+    function escribir(){
+        if(i<texto.length){
+            contenedor.innerHTML+=texto.charAt(i);
+            i++;
+            setTimeout(escribir,30);
+        }
+    }
+    escribir();
+}
+
+// 📸 GALERÍA
+function mostrarGaleria(){
+document.getElementById("galeriaContainer").style.display="block";
+}
+
+// 💜 CORAZONES
+function crearCorazon(){
+const heart=document.createElement("div");
+heart.classList.add("heart");
+heart.innerHTML="💜";
+heart.style.left=Math.random()*100+"vw";
+heart.style.fontSize=(Math.random()*25+15)+"px";
+document.body.appendChild(heart);
+setTimeout(()=>{heart.remove()},6000);
+}
+setInterval(crearCorazon,800);
+
+</script>
+</body>
+</html>
